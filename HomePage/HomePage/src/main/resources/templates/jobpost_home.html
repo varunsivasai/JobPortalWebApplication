@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Available Jobs</title>
+  <style>
+    body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: url('https://images.unsplash.com/photo-1581090700227-54b4c1f3e3e2?auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 20px;
+  animation: fadeInBg 1s ease-in;
+}
+
+    @keyframes fadeInBg {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(6px);
+      padding: 40px;
+      border-radius: 14px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 1000px;
+      text-align: center;
+      animation: slideUp 0.6s ease-out forwards;
+      transform: translateY(20px);
+    }
+
+    @keyframes slideUp {
+      to { transform: translateY(0); }
+    }
+
+    h1 {
+      color: #2c3e50;
+      font-size: 2.2em;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 8px;
+      padding: 12px 20px;
+      background-color: #1c92d2;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: bold;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #125a89;
+      transform: translateY(-2px);
+    }
+
+    .search-box {
+      margin: 20px auto;
+    }
+
+    .search-box input {
+      padding: 10px;
+      width: 300px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      margin-right: 10px;
+      font-size: 1em;
+    }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      animation: fadeInTable 1s ease-in;
+    }
+
+    @keyframes fadeInTable {
+      from { opacity: 0; transform: scale(0.98); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1c92d2;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f0f8ff;
+      transition: background-color 0.3s;
+    }
+
+    .no-jobs {
+      margin-top: 20px;
+      font-style: italic;
+      color: #777;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      .search-box input {
+        width: 100%;
+        margin-bottom: 10px;
+      }
+
+      table, th, td {
+        font-size: 0.9em;
+      }
+
+      .btn {
+        padding: 10px 16px;
+        font-size: 0.9em;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Available Jobs</h1>
+
+  <div class="search-box">
+    <form th:action="@{/jobs/landing}" method="get">
+      <input type="text" name="search" placeholder="Search by job title or company">
+      <button type="submit" class="btn">Search</button>
+    </form>
+  </div>
+
+  <table th:if="${jobs != null and !jobs.isEmpty()}">
+    <thead>
+    <tr>
+      <th>Job Title</th>
+      <th>Company</th>
+      <th>Location</th>
+      <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="job : ${jobs}">
+      <td th:text="${job.title}">Job Title</td>
+      <td th:text="${job.company}">Company</td>
+      <td th:text="${job.location}">Location</td>
+      <td>
+        <a th:href="@{'/jobs/apply/' + ${job.id}}" class="btn">Apply</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <p class="no-jobs" th:if="${jobs == null or jobs.isEmpty()}">
+    No job postings available. Please check back later.
+  </p>
+
+  <div style="margin-top: 20px;">
+    <a th:href="@{/jobseeker/homepage}" class="btn">Back to Dashboard</a>
+  </div>
+</div>
+</body>
+</html>

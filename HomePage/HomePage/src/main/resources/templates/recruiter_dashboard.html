@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Recruiter Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://images.unsplash.com/photo-1590608897129-79e7d5d5f6f2?auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      animation: fadeInBg 1s ease-in;
+    }
+
+    @keyframes fadeInBg {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .dashboard {
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 50px 40px;
+      border-radius: 14px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 700px;
+      text-align: center;
+      animation: slideUp 0.8s ease-out forwards;
+      transform: translateY(20px);
+    }
+
+    @keyframes slideUp {
+      to { transform: translateY(0); }
+    }
+
+    h1 {
+      font-size: 2.4em;
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    p {
+      color: #555;
+      margin-bottom: 30px;
+      font-size: 1.1em;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 15px;
+      padding: 14px 28px;
+      background-color: #1c92d2;
+      color: white;
+      text-decoration: none;
+      font-size: 1em;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #125a89;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background-color: #d9534f;
+    }
+
+    .btn-danger:hover {
+      background-color: #c9302c;
+    }
+
+    @media (max-width: 480px) {
+      .dashboard {
+        padding: 30px 20px;
+      }
+
+      .btn {
+        margin: 10px 5px;
+        padding: 12px 20px;
+        font-size: 0.9em;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="dashboard">
+  <h1>Welcome, Recruiter!</h1>
+  <p>Select an action below to manage job seekers and job postings.</p>
+
+  <a th:href="@{/recruiter/jobs}" class="btn">Manage Job Postings</a>
+  <a th:href="@{/recruiter/jobs/applications}" class="btn">View Job Applications</a>
+  <a th:href="@{/logout}" class="btn btn-danger">Logout</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Create Job Post</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #1c92d2, #f2fcfe);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 60px 20px;
+      animation: fadeInBg 1s ease-in;
+    }
+
+    @keyframes fadeInBg {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .form-card {
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(6px);
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 500px;
+      animation: slideUp 0.6s ease-out forwards;
+      transform: translateY(20px);
+      text-align: left;
+    }
+
+    @keyframes slideUp {
+      to { transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      font-size: 2em;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1em;
+      transition: box-shadow 0.3s ease;
+    }
+
+    input:focus, textarea:focus {
+      box-shadow: 0 0 8px #1c92d2;
+      outline: none;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background-color: #1c92d2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: #125a89;
+      transform: translateY(-2px);
+    }
+
+    .btn-back {
+      background-color: #007bff;
+      margin-top: 30px;
+      text-align: center;
+      display: block;
+      width: fit-content;
+    }
+
+    @media (max-width: 480px) {
+      .form-card {
+        padding: 30px 20px;
+      }
+
+      .btn, .btn-back {
+        font-size: 0.9em;
+        padding: 10px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="form-card">
+  <h1>Create Job Post</h1>
+
+  <form th:action="@{/recruiter/jobs/save}" th:object="${job}" method="post">
+    <label>Job Title</label>
+    <input type="text" th:field="*{title}" required>
+
+    <label>Company</label>
+    <input type="text" th:field="*{company}" required>
+
+    <label>Location</label>
+    <input type="text" th:field="*{location}" required>
+
+    <label>Description</label>
+    <textarea th:field="*{description}" rows="4" required></textarea>
+
+    <button type="submit" class="btn">Save Job</button>
+  </form>
+
+  <a th:href="@{/recruiter/jobs}" class="btn btn-back">← Back to Manage Jobs</a>
+</div>
+</body>
+</html>

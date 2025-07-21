@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Job Seeker Profile</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-5">
+  <h2 class="text-center mb-4">Edit Your Profile</h2>
+  <form action="/profile/update" method="post" enctype="multipart/form-data" class="card p-4 shadow">
+    <div class="mb-3">
+      <label class="form-label">Full Name</label>
+      <input type="text" name="name" class="form-control" th:value="${profile.name}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Email Address</label>
+      <input type="email" name="email" class="form-control" th:value="${profile.email}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Job Position</label>
+      <input type="text" name="jobPosition" class="form-control" th:value="${profile.jobPosition}" required>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Replace Resume (optional)</label>
+      <input type="file" name="resume" class="form-control" accept=".pdf,.doc,.docx">
+      <small class="text-muted">Leave blank to keep current resume.</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update Profile</button>
+    <a href="/profile" class="btn btn-secondary">Cancel</a>
+  </form>
+</div>
+
+</body>
+</html>

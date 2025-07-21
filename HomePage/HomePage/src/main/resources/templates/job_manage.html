@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Manage Job Posts</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://images.unsplash.com/photo-1581090700227-54b4c1f3e3e2?auto=format&fit=crop&w=1600&q=80')
+                  no-repeat center center/cover;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 60px 20px;
+      animation: fadeInBg 1s ease-in;
+    }
+
+    @keyframes fadeInBg {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 1000px;
+      animation: slideUp 0.6s ease-out forwards;
+      transform: translateY(20px);
+      text-align: center;
+    }
+
+    @keyframes slideUp {
+      to { transform: translateY(0); }
+    }
+
+    h1 {
+      color: #2c3e50;
+      font-size: 2.4em;
+      margin-bottom: 25px;
+    }
+
+    .message, .error {
+      font-weight: bold;
+      margin: 15px 0;
+    }
+
+    .message { color: #28a745; }
+    .error { color: #dc3545; }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 8px;
+      border-radius: 6px;
+      font-size: 0.95em;
+      font-weight: bold;
+      color: white;
+      text-decoration: none;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-add { background-color: #28a745; }
+    .btn-delete { background-color: #dc3545; }
+    .btn-back { background-color: #007bff; }
+    .btn-edit { background-color: #ffc107; color: #333; }
+
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      animation: fadeInTable 1s ease-in;
+    }
+
+    @keyframes fadeInTable {
+      from { opacity: 0; transform: scale(0.98); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    th, td {
+      padding: 14px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #1c92d2;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f0f8ff;
+      transition: background-color 0.3s;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      table, th, td {
+        font-size: 0.9em;
+      }
+
+      .btn {
+        padding: 8px 14px;
+        font-size: 0.85em;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Manage Job Posts</h1>
+
+  <p class="message" th:if="${message}" th:text="${message}"></p>
+  <p class="error" th:if="${error}" th:text="${error}"></p>
+
+  <a th:href="@{/recruiter/jobs/create}" class="btn btn-add">Add New Job</a>
+
+  <table th:if="${jobs != null and !jobs.isEmpty()}">
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Company</th>
+      <th>Location</th>
+      <th>Applications</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="job : ${jobs}">
+      <td th:text="${job.title}">Job Title</td>
+      <td th:text="${job.company}">Company</td>
+      <td th:text="${job.location}">Location</td>
+      <td>
+        <span class="application-count" th:if="${job.applicationCount > 0}">
+          📋 <span th:text="${job.applicationCount}"></span> application(s)
+        </span>
+        <span class="application-count text-muted" th:unless="${job.applicationCount > 0}">
+          No applications
+        </span>
+      </td>
+      <td>
+        <a th:href="@{'/recruiter/jobs/edit/' + ${job.id}}" class="btn btn-edit">Edit</a>
+        <a th:href="@{'/recruiter/jobs/delete/' + ${job.id}}" class="btn btn-delete">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <p th:if="${jobs == null or jobs.isEmpty()}">No job posts available. Add a new one!</p>
+
+  <a th:href="@{/recruiter/dashboard}" class="btn btn-back">Back to Dashboard</a>
+</div>
+</body>
+</html>

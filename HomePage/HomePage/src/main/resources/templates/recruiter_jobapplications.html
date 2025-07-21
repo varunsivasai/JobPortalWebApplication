@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Job Applications</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url('https://images.unsplash.com/photo-1581093588401-03019e47c8d9?auto=format&fit=crop&w=1600&q=80') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 60px 20px;
+      animation: fadeInBg 1s ease-in;
+    }
+
+    @keyframes fadeInBg {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .container {
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(8px);
+      padding: 40px;
+      border-radius: 14px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 1100px;
+      animation: slideUp 0.6s ease-out forwards;
+      transform: translateY(20px);
+    }
+
+    @keyframes slideUp {
+      to { transform: translateY(0); }
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.4em;
+      color: #2c3e50;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      animation: fadeInTable 1s ease-in;
+    }
+
+    @keyframes fadeInTable {
+      from { opacity: 0; transform: scale(0.98); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+      font-size: 0.95em;
+    }
+
+    th {
+      background-color: #1c92d2;
+      color: white;
+      font-weight: 600;
+    }
+
+    tr:hover {
+      background-color: #f0f8ff;
+      transition: background-color 0.3s;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 8px 14px;
+      margin: 5px 0;
+      background-color: #1c92d2;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 0.85em;
+      font-weight: bold;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn:hover {
+      background-color: #125a89;
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background-color: #d9534f;
+    }
+
+    .btn-danger:hover {
+      background-color: #c9302c;
+    }
+
+    .status-pending { color: orange; font-weight: bold; }
+    .status-accepted { color: green; font-weight: bold; }
+    .status-rejected { color: red; font-weight: bold; }
+
+    p.empty {
+      text-align: center;
+      font-size: 1.2em;
+      color: #555;
+      margin-top: 20px;
+    }
+
+    .nav {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    select {
+      padding: 6px;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 30px 20px;
+      }
+
+      th, td {
+        font-size: 0.85em;
+      }
+
+      .btn {
+        padding: 6px 10px;
+        font-size: 0.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Job Applications</h1>
+
+  <table th:if="${applications != null and !applications.isEmpty()}">
+    <thead>
+    <tr>
+      <th>Job Title</th>
+      <th>Company</th>
+      <th>Applicant Name</th>
+      <th>Email</th>
+      <th>Position Applied</th>
+      <th>Resume</th>
+      <th>Status</th>
+      <th>Update Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="app : ${applications}">
+      <td th:text="${app.jobPost.title}">Job</td>
+      <td th:text="${app.jobPost.company}">Company</td>
+      <td th:text="${app.jobSeeker.name}">Name</td>
+      <td th:text="${app.jobSeeker.email}">Email</td>
+      <td th:text="${app.jobSeeker.jobPosition}">Position</td>
+      <td>
+        <a th:href="@{'/profile/download?username=' + ${app.jobSeeker.user.username}}" class="btn" style="background: #17a2b8;">Download Resume</a>
+      </td>
+      <td>
+        <span th:class="${app.status == 'PENDING' ? 'status-pending' : (app.status == 'ACCEPTED' ? 'status-accepted' : 'status-rejected')}" th:text="${app.status}">Pending</span>
+      </td>
+      <td>
+        <form th:action="@{'/applications/' + ${app.id} + '/update'}" method="post">
+          <select name="status">
+            <option value="PENDING" th:selected="${app.status == 'PENDING'}">Pending</option>
+            <option value="ACCEPTED" th:selected="${app.status == 'ACCEPTED'}">Accepted</option>
+            <option value="REJECTED" th:selected="${app.status == 'REJECTED'}">Rejected</option>
+          </select>
+          <button type="submit" class="btn">Update</button>
+        </form>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <p class="empty" th:if="${applications == null or applications.isEmpty()}">
+    No job applications found.
+  </p>
+
+  <div class="nav">
+    <a th:href="@{/recruiter/jobs}" class="btn">Manage Jobs</a>
+    <a th:href="@{/recruiter/dashboard}" class="btn">Back to Dashboard</a>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register Recruiter</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #1c92d2, #f2fcfe); /* Fresh gradient */
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+      animation: fadeIn 1s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    .register-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+      padding: 50px 40px;
+      border-radius: 14px;
+      width: 370px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      text-align: center;
+      transform: translateY(20px);
+      animation: slideUp 0.8s ease-out forwards;
+    }
+
+    @keyframes slideUp {
+      to { transform: translateY(0); }
+    }
+
+    h1 {
+      margin-bottom: 20px;
+      font-size: 2em;
+      letter-spacing: 1px;
+      animation: fadeInText 1s ease-in;
+      color:black;
+    }
+
+    @keyframes fadeInText {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    label {
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.95em;
+      color: #333;
+
+    }
+
+    input {
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      font-size: 1em;
+      background: rgba(255, 255, 255, 0.85);
+      color: #333;
+      transition: box-shadow 0.3s, transform 0.2s;
+    }
+
+    input:focus {
+      box-shadow: 0 0 10px #00c6ff;
+      transform: scale(1.03);
+    }
+
+    button {
+      padding: 14px;
+      background: #00c6ff;
+      border: none;
+      font-size: 1em;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+    }
+
+    button:hover {
+      background: #0072ff;
+      transform: translateY(-2px);
+    }
+
+    .error-message {
+      margin: 10px 0;
+      color: #ff6b6b;
+      font-weight: bold;
+      font-size: 0.95em;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      color: #222;
+
+      text-decoration: underline;
+      transition: color 0.3s ease;
+    }
+
+    a:hover {
+      color: #00c6ff;
+    }
+
+    @media (max-width: 480px) {
+      .register-card {
+        width: 90%;
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="register-card">
+  <h1>Recruiter Registration</h1>
+
+
+
+  <form action="/register/recruiter" method="post">
+    <label for="username">Username or Email:</label>
+    <input type="text" id="username" name="username" required />
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required />
+
+    <button type="submit">Register</button>
+  </form>
+  <a href="/">← Back to Home</a>
+</div>
+</body>
+</html>

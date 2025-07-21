@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>My Job Applications</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 40px; text-align: center; }
+    h1 { color: #333; }
+    table { width: 80%; margin: auto; background: white; border-collapse: collapse; }
+    th, td { padding: 12px; border: 1px solid #ddd; }
+    th { background-color: #4CAF50; color: white; }
+    .status { font-weight: bold; }
+    .pending { color: orange; }
+    .accepted { color: green; }
+    .rejected { color: red; }
+    .btn { display: inline-block; margin-top: 20px; padding: 12px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 6px; }
+    .btn:hover { background-color: #45a049; }
+  </style>
+</head>
+<body>
+
+<h1>My Job Applications</h1>
+
+<table th:if="${applications != null and !applications.isEmpty()}">
+  <thead>
+  <tr>
+    <th>Job Title</th>
+    <th>Company</th>
+    <th>Status</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="app : ${applications}">
+    <td th:text="${app.jobPost.title}">Title</td>
+    <td th:text="${app.jobPost.company}">Company</td>
+    <td class="status" th:classappend="${app.status.toLowerCase()}" th:text="${app.status}">Status</td>
+  </tr>
+  </tbody>
+</table>
+
+<p th:if="${applications == null or applications.isEmpty()}">
+  You have not applied for any jobs yet.
+</p>
+
+<div>
+  <a th:href="@{/jobseeker/homepage}" class="btn">Back to Dashboard</a>
+</div>
+
+</body>
+</html>

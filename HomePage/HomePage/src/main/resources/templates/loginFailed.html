@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Login Failed</title>
+    <style>
+        body {
+          margin: 0;
+          padding: 0;
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(to right, #ff6a6a, #fceabb); /* Warm alert gradient */
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          animation: fadeInBg 0.8s ease-out;
+        }
+
+        @keyframes fadeInBg {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        .error-card {
+          background: rgba(255, 255, 255, 0.2);
+          backdrop-filter: blur(12px);
+          border-radius: 14px;
+          padding: 40px 35px;
+          width: 400px;
+          color: #b00020;
+          box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+          text-align: center;
+          transform: scale(0.95);
+          animation: zoomIn 0.5s ease-out forwards;
+        }
+
+        @keyframes zoomIn {
+          to { transform: scale(1); }
+        }
+
+        h1 {
+          font-size: 2em;
+          margin-bottom: 15px;
+          color: #b00020;
+          animation: shake 0.4s ease-in-out;
+        }
+
+        @keyframes shake {
+          0% { transform: translateX(0); }
+          25% { transform: translateX(-5px); }
+          50% { transform: translateX(5px); }
+          75% { transform: translateX(-3px); }
+          100% { transform: translateX(0); }
+        }
+
+        p {
+          font-size: 1.1em;
+          margin-bottom: 20px;
+          color: #333;
+        }
+
+        a {
+          display: inline-block;
+          margin: 10px;
+          text-decoration: none;
+          color: #b00020;
+          font-weight: bold;
+          padding: 10px 20px;
+          border: 2px solid #b00020;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+        }
+
+        a:hover {
+          background-color: #b00020;
+          color: #fff;
+        }
+
+        @media (max-width: 480px) {
+          .error-card {
+            width: 90%;
+            padding: 30px 20px;
+          }
+        }
+    </style>
+</head>
+<body>
+<div class="error-card">
+    <h1>Login Failed</h1>
+    <p>Invalid username or password. Please try again.</p>
+    <a href="/login">Try Again</a>
+    <a href="/">Back to Home</a>
+</div>
+</body>
+</html>

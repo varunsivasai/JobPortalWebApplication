@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Confirm Job Deletion</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h4 class="mb-0">⚠️ Confirm Job Deletion</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-warning" role="alert">
+                            <strong>Warning:</strong> This action cannot be undone!
+                        </div>
+                        
+                        <h5>Job Details:</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>Title:</strong> <span th:text="${deleteInfo.jobTitle}"></span></li>
+                            <li><strong>Applications:</strong> 
+                                <span th:if="${deleteInfo.hasApplications()}" class="text-danger">
+                                    <span th:text="${deleteInfo.applicationCount}"></span> application(s) will be permanently deleted
+                                </span>
+                                <span th:unless="${deleteInfo.hasApplications()}" class="text-success">
+                                    No applications to delete
+                                </span>
+                            </li>
+                        </ul>
+                        
+                        <div th:if="${deleteInfo.hasApplications()}" class="alert alert-danger" role="alert">
+                            <strong>Important:</strong> Deleting this job will also permanently delete all 
+                            <span th:text="${deleteInfo.applicationCount}"></span> job application(s) 
+                            associated with it. Applicants will lose their application history for this position.
+                        </div>
+                        
+                        <div class="mt-4 d-flex justify-content-between">
+                            <a href="/recruiter/jobs" class="btn btn-secondary">
+                                ← Cancel
+                            </a>
+                            
+                            <form th:action="@{/recruiter/jobs/delete/{id}(id=${deleteInfo.jobId})}" 
+                                  method="post" class="d-inline">
+                                <button type="submit" class="btn btn-danger">
+                                    🗑️ Yes, Delete Job
+                                    <span th:if="${deleteInfo.hasApplications()}">
+                                        and <span th:text="${deleteInfo.applicationCount}"></span> Application(s)
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
