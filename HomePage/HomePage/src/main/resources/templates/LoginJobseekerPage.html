@@ -48,7 +48,6 @@
       display: flex;
       flex-direction: column;
       gap: 15px;
-      position: relative;
     }
 
     label {
@@ -85,6 +84,7 @@
       transform: translateY(-50%);
       cursor: pointer;
       color: #555;
+      transition: color 0.3s;
     }
 
     .password-wrapper i:hover {
@@ -106,6 +106,21 @@
     button:hover {
       background-color: #125a89;
       transform: translateY(-2px);
+    }
+
+    .link-group {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .link-group a {
+      color: #333;
+      text-decoration: underline;
+      transition: color 0.3s ease;
+    }
+
+    .link-group a:hover {
+      color: #1c92d2;
     }
 
     .back-link {
@@ -134,7 +149,8 @@
 <body>
 <div class="login-card">
   <h2>Job Seeker Login</h2>
-  <form action="/login" method="post">
+
+  <form th:action="@{/login}" method="post">
     <label for="username">Username or Email:</label>
     <input type="text" id="username" name="username" required />
 
@@ -150,7 +166,16 @@
     </select>
 
     <button type="submit">Login</button>
+
+    <div th:if="${msg}" style="margin-top: 10px; color: red; font-weight: bold;">
+      <p th:text="${msg}"></p>
+    </div>
+
+    <div class="link-group" th:if="${showForgotPassword}">
+      <a th:href="@{/forgot-password}">Forgot your password?</a>
+    </div>
   </form>
+
   <div class="back-link">
     <a href="/">← Back to Home</a>
   </div>

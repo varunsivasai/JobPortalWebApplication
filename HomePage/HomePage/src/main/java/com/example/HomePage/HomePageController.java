@@ -3,6 +3,7 @@ package com.example.HomePage;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
@@ -12,89 +13,110 @@ public class HomePageController {
     private RegisterJobSeekerRepository jobSeekerRepository;
 
     @Autowired
-    private RegisterJobRecuiterRepository recuiterRepository;
+    private RegisterJobRecuiterRepository recruiterRepository;
 
     @GetMapping("/")
     public String homepage() {
-        return "HomePage";  // Landing page (with login/register links)
+        return "HomePage";
     }
 
     @GetMapping("/register/jobseeker")
-    public String registerJobseekerPage() {
+    public String registerJobseekerPage(@RequestParam(required = false) String error, Model model) {
+        if (error != null) model.addAttribute("msg", error);
         return "Register-jobseeker";
     }
 
     @PostMapping("/register/jobseeker")
-    public String registerJobseeker(@RequestParam String username, @RequestParam String password) {
+    public String registerJobseeker(@RequestParam String username,
+                                    @RequestParam String password,
+                                    HttpSession session,
+                                    Model model) {
         try {
-            // Check if username already exists
             RegisterJobSeeker existingJs = jobSeekerRepository.findByUsername(username);
             if (existingJs != null) {
-                return "redirect:/register/jobseeker?error=Username already exists";
+                Integer attempts = (Integer) session.getAttribute("jobseekerRegisterAttempts");
+                attempts = (attempts == null) ? 1 : attempts + 1;
+                session.setAttribute("jobseekerRegisterAttempts", attempts);
+
+                if (attempts >= 2) {
+                    model.addAttribute("msg", "Account already exists. If you forgot your password, use the link below.");
+                    model.addAttribute("showForgotPassword", true);
+                } else {
+                    model.addAttribute("msg", "Username already exists. Try again.");
+                }
+                return "Register-jobseeker";
             }
-            
+
+            session.removeAttribute("jobseekerRegisterAttempts");
             RegisterJobSeeker js = new RegisterJobSeeker();
             js.setUsername(username);
             js.setPassword(password);
             jobSeekerRepository.save(js);
-            return "registerJobSeekerSuccesfully";
+            return "registerJobSeekerSuccessfully";
         } catch (Exception e) {
-            System.err.println("Error registering job seeker: " + e.getMessage());
-            e.printStackTrace();
-            return "redirect:/register/jobseeker?error=Registration failed: " + e.getMessage();
+            model.addAttribute("msg", "Registration failed. Please try again.");
+            return "Register-jobseeker";
         }
     }
 
     @GetMapping("/register/recruiter")
-    public String registerRecuiterPage() {
+    public String registerRecruiterPage(@RequestParam(required = false) String error, Model model) {
+        if (error != null) model.addAttribute("msg", error);
         return "Register-recuiter";
     }
 
     @PostMapping("/register/recruiter")
-    public String registerRecuiter(@RequestParam String username, @RequestParam String password) {
+    public String registerRecruiter(@RequestParam String username,
+                                    @RequestParam String password,
+                                    HttpSession session,
+                                    Model model) {
         try {
-            // Check if username already exists
-            RegisterRecuiter existingRec = recuiterRepository.findByUsername(username);
+            RegisterRecuiter existingRec = recruiterRepository.findByUsername(username);
             if (existingRec != null) {
-                // Username already exists - redirect with error
-                return "redirect:/register/recruiter?error=Username already exists";
+                Integer attempts = (Integer) session.getAttribute("recruiterRegisterAttempts");
+                attempts = (attempts == null) ? 1 : attempts + 1;
+                session.setAttribute("recruiterRegisterAttempts", attempts);
+
+                if (attempts >= 2) {
+                    model.addAttribute("msg", "Account already exists. Tap 'Forgot Password' to recover.");
+                    model.addAttribute("showForgotPassword", true);
+                } else {
+                    model.addAttribute("msg", "Username already exists. Try again.");
+                }
+                return "Register-recuiter";
             }
-            
+
+            session.removeAttribute("recruiterRegisterAttempts");
             RegisterRecuiter rec = new RegisterRecuiter();
             rec.setUsername(username);
             rec.setPassword(password);
-            recuiterRepository.save(rec);
+            recruiterRepository.save(rec);
             return "registerRecuiterSuccessfully";
         } catch (Exception e) {
-            // Log the error and return error page
-            System.err.println("Error registering recruiter: " + e.getMessage());
-            e.printStackTrace();
-            return "redirect:/register/recruiter?error=Registration failed: " + e.getMessage();
+            model.addAttribute("msg", "Registration failed. Please try again.");
+            return "Register-recuiter";
         }
     }
 
     @GetMapping("/login/jobseeker")
-    public String loginPage() {
-        return "LoginJobseekerPage"; // Generic login page
-    }
-    @GetMapping("/login/recruiter")
-    public String loginRecruiterPage() {
-        return "LoginRecuiterPage"; // Recruiter login page
+    public String loginJobseekerPage(@RequestParam(required = false) String error, Model model) {
+        if (error != null) model.addAttribute("msg", error);
+        return "LoginJobseekerPage";
     }
 
-    @GetMapping("/login")
-    public String genericLoginPage() {
-        return "LoginJobseekerPage"; // Generic login page
+    @GetMapping("/login/recruiter")
+    public String loginRecruiterPage(@RequestParam(required = false) String error, Model model) {
+        if (error != null) model.addAttribute("msg", error);
+        return "LoginRecuiterPage";
     }
 
     @PostMapping("/login")
     public String login(@RequestParam String username,
                         @RequestParam String password,
                         @RequestParam String role,
-                        HttpSession session) {
-
+                        HttpSession session,
+                        Model model) {
         try {
-            // Check Job Seeker login
             if ("jobseeker".equalsIgnoreCase(role)) {
                 RegisterJobSeeker js = jobSeekerRepository.findByUsername(username);
                 if (js != null && js.getPassword().equals(password)) {
@@ -102,26 +124,26 @@ public class HomePageController {
                     session.setAttribute("role", "jobseeker");
                     return handlePostLoginRedirect(session, "redirect:/jobseeker/homepage");
                 }
-            }
-
-            // Check Recruiter login
-            else if ("recruiter".equalsIgnoreCase(role)) {
-                RegisterRecuiter rec = recuiterRepository.findByUsername(username);
+            } else if ("recruiter".equalsIgnoreCase(role)) {
+                RegisterRecuiter rec = recruiterRepository.findByUsername(username);
                 if (rec != null && rec.getPassword().equals(password)) {
                     session.setAttribute("username", username);
                     session.setAttribute("role", "recruiter");
                     return handlePostLoginRedirect(session, "redirect:/recruiter/dashboard");
                 }
+            } else {
+                model.addAttribute("msg", "Invalid role selected.");
+                return "HomePage";
             }
         } catch (Exception e) {
             System.err.println("Error during login: " + e.getMessage());
-            e.printStackTrace();
         }
 
-        return "loginFailed"; // Show login failed page
+        model.addAttribute("msg", "Login failed. Please check your credentials or use 'Forgot Password'.");
+        model.addAttribute("showForgotPassword", true);
+        return "jobseeker".equalsIgnoreCase(role) ? "LoginJobseekerPage" : "LoginRecuiterPage";
     }
 
-    // Redirect logic (handles Apply Job redirect)
     private String handlePostLoginRedirect(HttpSession session, String defaultRedirect) {
         String redirectAfterLogin = (String) session.getAttribute("redirectAfterLogin");
         if (redirectAfterLogin != null) {
@@ -129,5 +151,80 @@ public class HomePageController {
             return "redirect:" + redirectAfterLogin;
         }
         return defaultRedirect;
+    }
+
+    @GetMapping("/forgot-password")
+    public String showForgotPasswordForm() {
+        return "ForgotPasswordPage";
+    }
+
+    @PostMapping("/forgot-password")
+    public String processForgotPassword(@RequestParam String username, Model model) {
+        try {
+            boolean found = false;
+
+            RegisterJobSeeker js = jobSeekerRepository.findByUsername(username);
+            if (js != null) {
+                found = true;
+                model.addAttribute("username", username);
+                model.addAttribute("message", "Reset link generated (Jobseeker). Click below to set a new password.");
+                return "redirect:/reset-password?username=" + username;
+            }
+
+            RegisterRecuiter rec = recruiterRepository.findByUsername(username);
+            if (rec != null) {
+                found = true;
+                model.addAttribute("username", username);
+                model.addAttribute("message", "Reset link generated (Recruiter). Click below to set a new password.");
+                return "redirect:/reset-password?username=" + username;
+            }
+
+            if (!found) {
+                model.addAttribute("message", "Username not found. Please check and try again.");
+            }
+
+        } catch (Exception e) {
+            model.addAttribute("message", "Something went wrong. Please try again later.");
+        }
+
+        return "ForgotPasswordPage";
+    }
+
+    @GetMapping("/reset-password")
+    public String showResetPasswordForm(@RequestParam String username, Model model) {
+        model.addAttribute("username", username);
+        return "ResetPasswordPage";
+    }
+
+    @PostMapping("/reset-password")
+    public String processResetPassword(@RequestParam String username,
+                                       @RequestParam String newPassword,
+                                       Model model) {
+        boolean updated = false;
+        boolean isRecruiter = false;
+
+        RegisterJobSeeker js = jobSeekerRepository.findByUsername(username);
+        if (js != null) {
+            js.setPassword(newPassword);
+            jobSeekerRepository.save(js);
+            updated = true;
+        }
+
+        RegisterRecuiter rec = recruiterRepository.findByUsername(username);
+        if (rec != null) {
+            rec.setPassword(newPassword);
+            recruiterRepository.save(rec);
+            updated = true;
+            isRecruiter = true;
+        }
+
+        if (updated) {
+            model.addAttribute("msg", "Password updated successfully. Please sign in.");
+            return isRecruiter ? "LoginRecuiterPage" : "LoginJobseekerPage";
+        } else {
+            model.addAttribute("msg", "Username not found. Try again.");
+            model.addAttribute("username", username);
+            return "ResetPasswordPage";
+        }
     }
 }

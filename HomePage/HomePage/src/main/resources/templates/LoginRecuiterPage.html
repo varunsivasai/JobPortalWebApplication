@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8" />
   <title>Recruiter Login</title>
-  <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
     body {
@@ -109,6 +108,21 @@
       transform: translateY(-2px);
     }
 
+    .link-group {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    .link-group a {
+      color: #333;
+      text-decoration: underline;
+      transition: color 0.3s ease;
+    }
+
+    .link-group a:hover {
+      color: #1c92d2;
+    }
+
     .back-link {
       text-align: center;
       margin-top: 20px;
@@ -135,7 +149,8 @@
 <body>
 <div class="login-card">
   <h1>Recruiter Login</h1>
-  <form action="/login" method="post">
+
+  <form th:action="@{/login}" method="post">
     <input type="hidden" name="role" value="recruiter" />
 
     <label for="username">Username or Email:</label>
@@ -144,12 +159,20 @@
     <label for="password">Password:</label>
     <div class="password-wrapper">
       <input type="password" id="password" name="password" required />
-      <!-- Professional eye icon -->
       <i class="fa-solid fa-eye" id="togglePassword"></i>
     </div>
 
     <button type="submit">Login</button>
+
+    <div th:if="${msg}" style="margin-top: 10px; color: red; font-weight: bold;">
+      <p th:text="${msg}"></p>
+    </div>
+
+    <div class="link-group" th:if="${showForgotPassword}">
+      <a th:href="@{/forgot-password}">Forgot your password?</a>
+    </div>
   </form>
+
   <div class="back-link">
     <a href="/">← Back to Home</a>
   </div>
@@ -162,7 +185,7 @@
   togglePassword.addEventListener("click", function () {
     const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
     passwordField.setAttribute("type", type);
-    this.classList.toggle("fa-eye-slash"); // Toggle icon state
+    this.classList.toggle("fa-eye-slash");
   });
 </script>
 </body>
